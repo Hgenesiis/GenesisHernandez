@@ -118,9 +118,12 @@ body.view-home .nav .home{display:none}
 .v-section{border-top:1px solid var(--paper-2);padding-block:clamp(36px,5vw,64px)}
 .v-section:first-child{margin-top:clamp(20px,3vw,40px)}
 .v-section h2{font:400 clamp(36px,4.6vw,60px)/1 var(--main);color:var(--wine-deep);margin:0 0 .2em}
-.v-section>p{margin:0 0 28px;color:var(--muted);max-width:56ch}
-.v-row{display:flex;flex-wrap:wrap;gap:clamp(20px,3vw,40px)}
-.video-card{width:min(440px,calc(80vh * 9 / 16),100%)}
+.v-section h2+.v-sub{margin:.4em 0 32px}
+.v-section h2+.v-row{margin-top:28px}
+.v-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:clamp(14px,1.6vw,24px);margin-inline:calc(50% - 50vw);padding-inline:var(--gutter)}
+.video-page{overflow-x:clip}
+.video-card{min-width:0}
+@media (max-width:900px){.v-row{grid-auto-columns:min(72vw,340px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}.video-card{scroll-snap-align:start}}
 .video-card video{width:100%;border-radius:6px;background:#000;aspect-ratio:9/16;object-fit:cover;display:block}
 .video-card h3{font:400 26px/1.2 var(--main);color:var(--wine-deep);margin:.6em 0 .1em}
 .video-card p{margin:0;font-size:14px;color:var(--muted)}
@@ -287,13 +290,12 @@ const P=[
 /* ---------- VIDEO: add a video here, files go in video/ ----------
    e.g. {src:'video/my-film.mp4', poster:'video/my-film.jpg', title:'Botanical workshop', note:'Short film · Editing'} */
 const VS=[
- {name:'Jewelry',videos:[
-  {src:'videos/roberta-amsterdam.mp4',poster:'videos/roberta-amsterdam.jpg',title:'Roberta Amsterdam',note:'Client work · Jewelry reel'}]},
- {name:'Fashion',videos:[
-  {src:'videos/chaios-street.mp4',poster:'videos/chaios-street.jpg',title:'Chaios',note:'Concept · Street campaign reel'}]},
- {name:'Launches',videos:[
-  {src:'videos/chaios-new-drops.mp4',poster:'videos/chaios-new-drops.jpg',title:'Chaios · New drops',note:'Concept · Launch reel'},
-  {src:'videos/sol-de-janeiro.mp4',poster:'videos/sol-de-janeiro.jpg',title:'Sol de Janeiro',note:'Concept · Fragrance reel'}]},
+ {name:'AI made',sub:'Human directed',videos:[
+  {src:'videos/roberta-amsterdam.mp4',poster:'videos/roberta-amsterdam.jpg',title:'Roberta Amsterdam',note:'Client work · Jewelry reel'},
+  {src:'videos/sol-de-janeiro.mp4',poster:'videos/sol-de-janeiro.jpg',title:'Sol de Janeiro',note:'Concept · Fragrance reel'},
+  {src:'videos/chaios-street.mp4',poster:'videos/chaios-street.jpg',title:'Chaios',note:'Concept · Street campaign reel'},
+  {src:'videos/chaios-new-drops.mp4',poster:'videos/chaios-new-drops.jpg',title:'Chaios · New drops',note:'Concept · Launch reel'}]},
+ /* new section example: {name:'Section name',sub:'Subtitle',videos:[ {src:'videos/file.mp4',poster:'videos/file.jpg',title:'Title',note:'Note'} ]}, */
 ];
 const V=VS.flatMap(x=>x.videos);
 
@@ -324,7 +326,8 @@ P.forEach(p=>{
 const vg=document.getElementById('videos');
 VS.forEach(sec=>{if(!sec.videos.length)return;
   const se=document.createElement('section');se.className='v-section';
-  se.innerHTML='<h2></h2><div class="v-row"></div>';se.querySelector('h2').textContent=sec.name;
+  se.innerHTML='<h2></h2><p class="eyebrow v-sub"></p><div class="v-row"></div>';se.querySelector('h2').textContent=sec.name;
+  const sb=se.querySelector('.v-sub');if(sec.sub)sb.textContent=sec.sub;else sb.remove();
   const row=se.querySelector('.v-row');
   sec.videos.forEach(v=>{const d=document.createElement('article');d.className='video-card';
     d.innerHTML=`<video controls playsinline preload="metadata" ${v.poster?`poster="${v.poster}"`:''} src="${v.src}"></video><h3></h3><p></p>`;
